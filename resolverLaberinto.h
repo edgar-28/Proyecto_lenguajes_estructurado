@@ -13,6 +13,11 @@
 
 #define SIZE 10000
 #define MAX 10000
+#define NORTE 0
+#define OESTE 1
+#define SUR 2
+#define ESTE 3
+#define TEST(a,b) ((a) & (1<<(b)))// 10 10
 int n = 0;
 char linea[MAX];
 int lineas[MAX];

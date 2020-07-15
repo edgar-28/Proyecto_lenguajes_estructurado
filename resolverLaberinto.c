@@ -19,11 +19,7 @@ void enqueue(struct queue *q, int);
 
 int dequeue(struct queue *q);
 
-void display(struct queue *q);
-
 int isEmpty(struct queue *q);
-
-void printQueue(struct queue *q);
 
 struct node {
     int vertex;
@@ -61,7 +57,6 @@ void bfs(struct Graph *graph, int startVertex, int endVertex) {
     graph->visited[startVertex] = 1;
     enqueue(q, startVertex);
     while (!isEmpty(q)) {
-        printQueue(q);
         int currentVertex = dequeue(q);
         solucionBfs[contBfs] = currentVertex;
         struct node *temp = graph->adjLists[currentVertex];
@@ -158,17 +153,6 @@ int dequeue(struct queue *q) {
     return item;
 }
 
-// Print the queue
-void printQueue(struct queue *q) {
-    int i = q->front;
-
-    if (isEmpty(q)) {
-    } else {
-        for (i = q->front; i < q->rear + 1; i++) {
-        }
-    }
-}
-
 void crearMatriz() {
     int i = 0;
     int j = 0;
@@ -224,21 +208,21 @@ void matrizDirecciones() {
                 nodo++;
             } else if (valor == 1) {
                 oeste = nodo - 1;
-                direcciones[nodo][1] = oeste;//oeste
-                direcciones[oeste][3] = nodo;//este
+                direcciones[nodo][OESTE] = oeste;//oeste
+                direcciones[oeste][ESTE] = nodo;//este
                 nodo++;
             } else if (valor == 2) {
                 norte = nodo - columnas;
-                direcciones[nodo][0] = norte;//norte
-                direcciones[norte][2] = nodo;//sur
+                direcciones[nodo][NORTE] = norte;//norte
+                direcciones[norte][SUR] = nodo;//sur
                 nodo++;
             } else if (valor == 3) {
                 oeste = nodo - 1;
                 norte = nodo - columnas;
-                direcciones[nodo][0] = norte;//norte
-                direcciones[norte][2] = nodo;//sur
-                direcciones[nodo][1] = oeste;//oeste
-                direcciones[oeste][3] = nodo;//este
+                direcciones[nodo][NORTE] = norte;//norte
+                direcciones[norte][SUR] = nodo;//sur
+                direcciones[nodo][OESTE] = oeste;//oeste
+                direcciones[oeste][ESTE] = nodo;//este
                 nodo++;
             }
         }
@@ -272,18 +256,18 @@ void nodosMatriz() {
     }
 }
 
-void direccionesSolucion() {
+void direccionesSolucion(int contSol, int solucion[MAX]) {
     nodosiguiente = 1;
     bool primero = true;
     int i = 0;
     bool conectados = false;
     bool salir = false;
     contador = 0;
-    while (i < contBfs && !salir) {
+    while (i < contSol && !salir) {
         conectados = false;
-        int nodo = solucionBfs[i];
+        int nodo = solucion[i];
         for (int j = 0; j < 4 && !conectados; ++j) {
-            if (direcciones[nodo][j] == solucionBfs[nodosiguiente]) {
+            if (direcciones[nodo][j] == solucion[nodosiguiente]) {
                 par.a = nodo;//Origen
                 par.b = j;//direccion
                 sol[contador] = par;
@@ -296,14 +280,14 @@ void direccionesSolucion() {
         }
         primero = false;
 
+        if (solucion[nodosiguiente] == solucion[contSol]) {
+            salir = true;
+        }
         if (conectados == false) {
             i--;
         } else {
             nodosiguiente++;
             i++;
-        }
-        if (solucionBfs[nodosiguiente] == solucionBfs[contBfs]) {
-            salir = true;
         }
     }
 }
@@ -329,25 +313,61 @@ int main(int args, char *argsv[]) {
     for (int i = 0; i < numNodos; ++i) {
         addEdge(graph, grafo[i].a, grafo[i].b);
     }
-    bfs(graph, inicio, final);
 
+    bfs(graph, inicio, final);
     for (int j = 0; j < contBfs; ++j) {
         printf("%d ", solucionBfs[j]);
     }
+    printf("\nSolucion con direcciones\n");
+    direccionesSolucion(contBfs, solucionBfs);
+    for (int j = 0; j < contador; j++) {
+        printf("(%d,%d) ", sol[j].a, sol[j].b);
+    }
+
+    for (int k = 0; k < contador; ++k) {
+        int dir=sol[k].b;
+        for (int i = 0; i <2 ; ++i) {
+            (TEST(dir,i))? printf("1 "):printf("0 ");
+        }
+    }
+    printf("\n");
+
 
     printf("\n DFS  \n");
     for (int j = 0; j < numNodos; ++j) {
         graph->visited[j] = 0;
     }
-    //dfs(graph, inicio, final);
-    //solucionDfs[contDfs + 1] = final;
-    //for (int j = 0; j <= contDfs; j++) {
-    //    printf("%d ", solucionDfs[j]);
-    //}
-    direccionesSolucion();
+    dfs(graph, inicio, final);
+    solucionDfs[contDfs + 1] = final;
+
+    for (int j = 0; j <= contDfs; j++) {
+        printf("%d ", solucionDfs[j]);
+    }
+    printf("\n Solucion con direcciones\n");
+
+    direccionesSolucion(contDfs, solucionDfs);
+
     for (int j = 0; j < contador; j++) {
         printf("(%d,%d) ", sol[j].a, sol[j].b);
     }
+
+    printf("\n");
+
+    //par.a=0;
+    //par.b=0;
+    //sol[8]=par;
+    int dir=0;
+    for (int k = 0; k < contador; ++k) {
+        printf(" d: %d ", sol[k].b);//10->01
+        dir = sol[k].b;
+        printf(" direccion: %d \n", dir);//10->01
+        for (int i = 0; i < 2 ; ++i) {
+            if (TEST(dir,i)) { //00       /10
+                printf("1");
+            } else { printf("0"); }
+        }
+    }
+
     printf("\n");
 
 
