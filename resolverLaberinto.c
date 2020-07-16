@@ -5,6 +5,7 @@
 #include "resolverLaberinto.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 
 struct queue {
@@ -292,6 +293,73 @@ void direccionesSolucion(int contSol, int solucion[MAX]) {
     }
 }
 
+void generarBits() {
+    for (int k = 0; k < contador; ++k) {
+        dir = sol[k].b;
+        for (int i = 1; i >= 0; --i) {
+            if (TEST(dir, i)) { //00       /10
+                if (i == 1) {
+                    par.a = 1;
+                } else if (i == 0) {
+                    par.b = 1;
+                }
+            } else {
+                if (i == 1) {
+                    par.a = 0;
+                } else if (i == 0) {
+                    par.b = 0;
+                }
+            }
+        }
+        arregloBits[k] = par;
+    }
+}
+
+void generarResultado() {
+    int j = contador - 1;
+    contReiniciar = 0;
+    cant_pares = 0;
+    resultado = 0;
+    contPosicion = 0;
+    contadorBits = 0;
+    resultadosR [MAX];
+    while (j >= 0) {
+        if (contReiniciar <= 14 && contReiniciar < contador) {
+            resultado += (arregloBits[j].b << contadorBits);
+            contadorBits++;
+            resultado += (arregloBits[j].a << contadorBits);
+            contadorBits++;
+            cant_pares = cant_pares + 2;
+            if (contReiniciar == 14) {
+                resultadosR[contPosicion] = resultado;
+                contPosicion++;
+                resultado = 0;
+                cant_pares = 0;
+            } else {
+                resultadosR[contPosicion] = resultado;
+            }
+            j--;
+            contReiniciar++;
+        } else {
+            contReiniciar = 0;
+            resultado = 0;
+            contadorBits = 0;
+        }
+    }
+    int exponente = 0;
+    if (cant_pares < 28) {
+        exponente = 28 - cant_pares;
+        int res = resultadosR[contPosicion] * (1 << exponente);
+        resultadosR[contPosicion] = res;
+    }
+    printf("\n");
+    printf("%d ", contador - 1);
+    for (int l = contPosicion; l >= 0; --l) {
+        printf("%d ", resultadosR[l]);
+    }
+    printf("\n");
+}
+
 int main(int args, char *argsv[]) {
     int puntoAx = atoi(argsv[1]);
     int puntoAy = atoi(argsv[2]);
@@ -301,7 +369,7 @@ int main(int args, char *argsv[]) {
     crearMatriz();
     //imprimirMatriz(matriz,filas,columnas);
     matrizDirecciones();
-    imprimirMatriz(direcciones, numNodos, 4);
+    //imprimirMatriz(direcciones, numNodos, 4);
     crearGrafo();
 
     nodosMatriz();
@@ -313,87 +381,21 @@ int main(int args, char *argsv[]) {
     for (int i = 0; i < numNodos; ++i) {
         addEdge(graph, grafo[i].a, grafo[i].b);
     }
-
     bfs(graph, inicio, final);
-
-    printf("\nSolucion con direcciones\n");
     direccionesSolucion(contBfs, solucionBfs);
-
-
-    printf("\n DFS  \n");
     for (int j = 0; j < numNodos; ++j) {
         graph->visited[j] = 0;
     }
+
+    generarBits();
+    generarResultado();
+
     dfs(graph, inicio, final);
     solucionDfs[contDfs + 1] = final;
-
-    printf("\n Solucion con direcciones\n");
-
     direccionesSolucion(contDfs, solucionDfs);
-    for (int j = 0; j < contador; j++) {
-        printf("(%d,%d) ", sol[j].a, sol[j].b);
-    }
 
-    printf("\n");
+    generarBits();
+    generarResultado();
 
-    int dir = 0;
-    for (int k = 0; k < contador; ++k) {
-        dir = sol[k].b;
-        //printf("Direccion: %d \n", dir);
-        for (int i = 1; i >= 0; --i) {
-            if (TEST(dir, i)) { //00       /10
-                if (i == 1) {
-                    par.a = 1;
-                } else if (i == 0) {
-                    par.b = 1;
-                }
-                printf("1");
-            } else {
-                if (i == 1) {
-                    par.a = 0;
-                } else if (i == 0) {
-                    par.b = 0;
-                }
-                printf("0");
-            }
-        }
-        arregloBits[k] = par;
-    }
-
-    int contadorBits = 0;
-    int contReiniciar = 0;
-    int contPosicion = 0;
-    int j = contador;
-    printf("\n Contador: %d\n", j);
-    while (j >= 0) {
-        //printf("\n E1 \n");
-        printf("\nJ: %d\n", j);
-        int resultado = 0;
-        contReiniciar = 0;
-        contadorBits = 0;
-        while (contReiniciar <= 15 && contReiniciar < contador) {
-            resultado += (arregloBits[j].b << contadorBits);
-            contadorBits++;
-            resultado += (arregloBits[j].a << contadorBits);
-            contadorBits++;
-            printf("\nRsultado: %d\n", resultado);
-            if (contReiniciar == 14) {
-                resultadosR[contPosicion] = resultado;
-                contPosicion++;
-                resultado = 0;
-            } else {
-                resultadosR[contPosicion] = resultado;
-            }
-
-            j--;
-            contReiniciar++;
-        }
-        //printf("Arreglo bits: (%d,%d) \n", arregloBits[j].a, arregloBits[j].b);
-    }
-    //printf("Resultado %d\n", resultado);
-
-    for (int l = 0; l <= contPosicion; ++l) {
-        printf("El valor del resultado 32: %d\n", resultadosR[l]);
-    }
     return 0;
 }
