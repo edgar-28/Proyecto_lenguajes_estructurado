@@ -40,6 +40,8 @@ int contadorG=0;
 int solucionBfs[MAX];
 struct pair sol[MAX];
 int solucionDfs[MAX];
+struct pair arregloBits[MAX];
+int resultadosR [MAX];
 int contador;
 int contBfs;
 int contDfs;

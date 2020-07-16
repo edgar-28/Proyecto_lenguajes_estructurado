@@ -315,22 +315,9 @@ int main(int args, char *argsv[]) {
     }
 
     bfs(graph, inicio, final);
-    for (int j = 0; j < contBfs; ++j) {
-        printf("%d ", solucionBfs[j]);
-    }
+
     printf("\nSolucion con direcciones\n");
     direccionesSolucion(contBfs, solucionBfs);
-    for (int j = 0; j < contador; j++) {
-        printf("(%d,%d) ", sol[j].a, sol[j].b);
-    }
-
-    for (int k = 0; k < contador; ++k) {
-        int dir=sol[k].b;
-        for (int i = 0; i <2 ; ++i) {
-            (TEST(dir,i))? printf("1 "):printf("0 ");
-        }
-    }
-    printf("\n");
 
 
     printf("\n DFS  \n");
@@ -340,36 +327,73 @@ int main(int args, char *argsv[]) {
     dfs(graph, inicio, final);
     solucionDfs[contDfs + 1] = final;
 
-    for (int j = 0; j <= contDfs; j++) {
-        printf("%d ", solucionDfs[j]);
-    }
     printf("\n Solucion con direcciones\n");
 
     direccionesSolucion(contDfs, solucionDfs);
-
     for (int j = 0; j < contador; j++) {
         printf("(%d,%d) ", sol[j].a, sol[j].b);
     }
 
     printf("\n");
 
-    //par.a=0;
-    //par.b=0;
-    //sol[8]=par;
-    int dir=0;
+    int dir = 0;
     for (int k = 0; k < contador; ++k) {
-        printf(" d: %d ", sol[k].b);//10->01
         dir = sol[k].b;
-        printf(" direccion: %d \n", dir);//10->01
-        for (int i = 0; i < 2 ; ++i) {
-            if (TEST(dir,i)) { //00       /10
+        //printf("Direccion: %d \n", dir);
+        for (int i = 1; i >= 0; --i) {
+            if (TEST(dir, i)) { //00       /10
+                if (i == 1) {
+                    par.a = 1;
+                } else if (i == 0) {
+                    par.b = 1;
+                }
                 printf("1");
-            } else { printf("0"); }
+            } else {
+                if (i == 1) {
+                    par.a = 0;
+                } else if (i == 0) {
+                    par.b = 0;
+                }
+                printf("0");
+            }
         }
+        arregloBits[k] = par;
     }
 
-    printf("\n");
+    int contadorBits = 0;
+    int contReiniciar = 0;
+    int contPosicion = 0;
+    int j = contador;
+    printf("\n Contador: %d\n", j);
+    while (j >= 0) {
+        //printf("\n E1 \n");
+        printf("\nJ: %d\n", j);
+        int resultado = 0;
+        contReiniciar = 0;
+        contadorBits = 0;
+        while (contReiniciar <= 15 && contReiniciar < contador) {
+            resultado += (arregloBits[j].b << contadorBits);
+            contadorBits++;
+            resultado += (arregloBits[j].a << contadorBits);
+            contadorBits++;
+            printf("\nRsultado: %d\n", resultado);
+            if (contReiniciar == 14) {
+                resultadosR[contPosicion] = resultado;
+                contPosicion++;
+                resultado = 0;
+            } else {
+                resultadosR[contPosicion] = resultado;
+            }
 
+            j--;
+            contReiniciar++;
+        }
+        //printf("Arreglo bits: (%d,%d) \n", arregloBits[j].a, arregloBits[j].b);
+    }
+    //printf("Resultado %d\n", resultado);
 
+    for (int l = 0; l <= contPosicion; ++l) {
+        printf("El valor del resultado 32: %d\n", resultadosR[l]);
+    }
     return 0;
 }
