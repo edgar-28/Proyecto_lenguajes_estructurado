@@ -5,8 +5,9 @@
 #include "resolverLaberinto.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-
+#include <time.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 struct queue {
     int items[SIZE];
@@ -322,7 +323,7 @@ void generarResultado() {
     resultado = 0;
     contPosicion = 0;
     contadorBits = 0;
-    resultadosR [MAX];
+    resultadosR[MAX];
     while (j >= 0) {
         if (contReiniciar <= 14 && contReiniciar < contador) {
             resultado += (arregloBits[j].b << contadorBits);
@@ -360,11 +361,23 @@ void generarResultado() {
     printf("\n");
 }
 
+double timeval_diff(struct timeval *a, struct timeval *b) {
+    return
+            (double) (a->tv_sec + (double) a->tv_usec / 1000000) -
+            (double) (b->tv_sec + (double) b->tv_usec / 1000000);
+}
+
 int main(int args, char *argsv[]) {
     int puntoAx = atoi(argsv[1]);
     int puntoAy = atoi(argsv[2]);
     int puntoBx = atoi(argsv[3]);
     int puntoBy = atoi(argsv[4]);
+
+    struct timeval t_ini, t_fin;
+    double mlSecs;
+
+    gettimeofday(&t_ini, NULL);
+
     //int casillas= atoi(argsv[5]);
     crearMatriz();
     //imprimirMatriz(matriz,filas,columnas);
@@ -396,6 +409,16 @@ int main(int args, char *argsv[]) {
 
     generarBits();
     generarResultado();
+
+    gettimeofday(&t_fin, NULL);
+
+    mlSecs = timeval_diff(&t_fin, &t_ini);
+    int segundos = mlSecs;
+    mlSecs = mlSecs - segundos;
+    int minutos = segundos / 60;
+    segundos -= minutos*60;
+
+    printf("Tiempo: %d min, %d segundos %.16g ms\n", minutos, segundos, mlSecs);
 
     return 0;
 }
