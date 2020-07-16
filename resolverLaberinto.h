@@ -18,25 +18,26 @@
 #define SUR 2
 #define ESTE 3
 #define TEST(a,b) ((a) & (1<<(b)))// 10 10
-int n = 0;
+#define FPS 1000
+int n;
 char linea[MAX];
 int lineas[MAX];
 
 int oeste;
 int norte;
-int valor=0;
+int valor;
 struct pair {
     int a;
     int b;
 }par;
-int filas = 0;
-int columnas = 0;
+int filas;
+int columnas;
 int matriz[MAX][MAX];
 int matrizOrig[MAX][MAX];
 struct pair grafo[MAX];
-int numNodos = 0;
+int numNodos;
 int direcciones[MAX][MAX];
-int contadorG=0;
+int contadorG;
 int solucionBfs[MAX];
 struct pair sol[MAX];
 int solucionDfs[MAX];

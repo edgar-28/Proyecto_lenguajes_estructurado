@@ -8,6 +8,10 @@
 #include <time.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <GL/glut.h>
+#include <GL/gl.h>
+#include "laberinto.h"
+
 
 struct queue {
     int items[SIZE];
@@ -361,11 +365,45 @@ void generarResultado() {
     printf("\n");
 }
 
+////////////////////////////////////////////////////
+void timer_callback();
+
+void display_callback();
+
+void reshape_callback(int, int);
+
+void init() {
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    initGrid(columnas, filas);
+}
+
+void display_callback() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    drawGrid();
+    glutSwapBuffers();
+}
+
+void reshape_callback(int w, int h) {
+    // Inicio
+    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0, columnas, 0.0, filas, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+void timer_callback() {
+    glutPostRedisplay();
+    glutTimerFunc(0, timer_callback, 0);
+}
+
+/////////////////////////////////////////////////
 double timeval_diff(struct timeval *a, struct timeval *b) {
     return
             (double) (a->tv_sec + (double) a->tv_usec / 1000000) -
             (double) (b->tv_sec + (double) b->tv_usec / 1000000);
 }
+
 
 int main(int args, char *argsv[]) {
     int puntoAx = atoi(argsv[1]);
@@ -412,13 +450,41 @@ int main(int args, char *argsv[]) {
 
     gettimeofday(&t_fin, NULL);
 
+    /////////////////////////////////////
+    printf("\n");
+    printf("\n");
+    for (int j = 0; j < contador; ++j) {
+        printf("%d  %d\n", sol[j].a, sol[j].b);
+    }
+
+    printf("\n");
+    printf("\n");
+
+    glutInit(&args, argsv);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+    if(filas < 200 || columnas < 200){
+        glutInitWindowSize(700, 700);
+    }
+    else{
+        glutInitWindowSize(1000, 1000);
+    }
+    glutCreateWindow("Laberinto");
+    glutDisplayFunc(display_callback);
+    glutReshapeFunc(reshape_callback);
+    glutTimerFunc(10, timer_callback, 0);
+    init();
+    glutMainLoop();
+    ////////////////////////////////////
+
     mlSecs = timeval_diff(&t_fin, &t_ini);
     int segundos = mlSecs;
     mlSecs = mlSecs - segundos;
     int minutos = segundos / 60;
-    segundos -= minutos*60;
+    segundos -= minutos * 60;
 
     printf("Tiempo: %d min, %d segundos %.16g ms\n", minutos, segundos, mlSecs);
 
     return 0;
 }
+
+// gcc resolverLaberinto.c laberinto.c -o firstOpenGlApp -lglut -lGLU -lGL

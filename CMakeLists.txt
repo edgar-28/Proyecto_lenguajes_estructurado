@@ -3,4 +3,4 @@ project(prubasc C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(prubasc resolverLaberinto.c resolverLaberinto.h)
+add_executable(prubasc resolverLaberinto.c resolverLaberinto.h laberinto.c laberinto.h)
