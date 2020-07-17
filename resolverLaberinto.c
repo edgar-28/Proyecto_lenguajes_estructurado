@@ -12,6 +12,7 @@
 #include <GL/gl.h>
 #include "laberinto.h"
 
+bool terminar = false;
 
 struct queue {
     int items[SIZE];
@@ -264,7 +265,7 @@ void nodosMatriz() {
 
 struct punto obtener_posicion(int);
 
-void direccionesSolucion(int contSol, int solucion[MAX]) {
+void direccionesSolucion(int contSol, int solucion[MAX], int algoritmo) {
     nodosiguiente = 1;
     bool primero = true;
     int i = 0;
@@ -280,7 +281,13 @@ void direccionesSolucion(int contSol, int solucion[MAX]) {
                 par.a = nodo;//Origen
                 par.b = j;//direccion
                 sol[contador] = par;
-                solucionXY[contador] = punto;
+                if(algoritmo == 0){ // BFS
+                    solucionXYBFS[contador] = punto;
+                }
+                else if(algoritmo == 1){
+                    solucionXYDFS[contador] = punto;
+                }
+
                 contador++;
                 conectados = true;
             }
@@ -381,21 +388,14 @@ void init() {
     initGrid(columnas, filas);
 }
 
-void puntos() {
-    glColor3f(0.0, 1.0, 1.0);
-    glPointSize(4.0);
-    glBegin(GL_POINTS);
-    for (int j = 0; j < contador; ++j) {
-        glVertex2f(solucionXY[j].x + 0.5, ((filas - 1) - solucionXY[j].y) + 0.5);
-    }
-    glEnd();
-}
-
 void display_callback() {
     glClear(GL_COLOR_BUFFER_BIT);
     drawGrid();
-    puntos();
+    dibujar_laberinto();
     glutSwapBuffers();
+    if(terminar){
+        exit(0);
+    }
 }
 
 void reshape_callback(int w, int h) {
@@ -421,7 +421,7 @@ struct punto obtener_posicion(int numero) {
 
 void timer_callback() {
     glutPostRedisplay();
-    glutTimerFunc(1000 / FPS, timer_callback, 0);
+    glutTimerFunc(1000 / casillas, timer_callback, 0);
 }
 
 /////////////////////////////////////////////////
@@ -431,6 +431,18 @@ double timeval_diff(struct timeval *a, struct timeval *b) {
             (double) (b->tv_sec + (double) b->tv_usec / 1000000);
 }
 
+void ventana(int args, char *argsv[]) {
+    glutInit(&args, argsv);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+    glutInitWindowSize(1000, 1000);
+    glutCreateWindow("Laberinto");
+    //glutDisplayFunc(display);
+    glutDisplayFunc(display_callback);
+    glutReshapeFunc(reshape_callback);
+    glutTimerFunc(1000/casillas, timer_callback, 0);
+    init();
+    glutMainLoop();
+}
 
 int main(int args, char *argsv[]) {
     puntoAx = atoi(argsv[1]);
@@ -443,7 +455,7 @@ int main(int args, char *argsv[]) {
 
     gettimeofday(&t_ini, NULL);
 
-    //int casillas= atoi(argsv[5]);
+    casillas = atoi(argsv[5]);
     crearMatriz();
     //imprimirMatriz(matriz,filas,columnas);
     matrizDirecciones();
@@ -460,7 +472,12 @@ int main(int args, char *argsv[]) {
         addEdge(graph, grafo[i].a, grafo[i].b);
     }
     bfs(graph, inicio, final);
-    direccionesSolucion(contBfs, solucionBfs);
+
+
+    for (int k = 0; k < contador; ++k) {
+        solBfs[k] = sol[k];
+    }
+
     for (int j = 0; j < numNodos; ++j) {
         graph->visited[j] = 0;
     }
@@ -470,43 +487,17 @@ int main(int args, char *argsv[]) {
 
     dfs(graph, inicio, final);
     solucionDfs[contDfs + 1] = final;
-    direccionesSolucion(contDfs, solucionDfs);
+    direccionesSolucion(contBfs, solucionBfs, 0);
+    direccionesSolucion(contDfs, solucionDfs, 1);
+
+    for (int k = 0; k < contador; ++k) {
+        solDfs[k] = sol[k];
+    }
 
     generarBits();
     generarResultado();
 
     gettimeofday(&t_fin, NULL);
-
-    /////////////////////////////////////
-
-    printf("\n");
-    printf("\n");
-
-    printf("Sol\n");
-    for (int j = 0; j < contador; ++j) {
-        printf("%d  %d\n", sol[j].a,sol[j].b);
-    }
-    printf("Puntos\n");
-    for (int j = 0; j < contador; ++j) {
-        printf("%d  %d\n", solucionXY[j].x,solucionXY[j].y);
-    }
-
-    imprimirMatriz(matrizOrig, filas, columnas);
-
-    printf("\n");
-    printf("\n");
-
-    glutInit(&args, argsv);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-    glutInitWindowSize(1000, 1000);
-    glutCreateWindow("Laberinto");
-    glutDisplayFunc(puntos);
-    glutDisplayFunc(display_callback);
-    glutReshapeFunc(reshape_callback);
-    init();
-    glutMainLoop();
-
-    ////////////////////////////////////
 
     mlSecs = timeval_diff(&t_fin, &t_ini);
     int segundos = mlSecs;
@@ -515,6 +506,14 @@ int main(int args, char *argsv[]) {
     segundos -= minutos * 60;
 
     printf("Tiempo: %d min, %d segundos %.16g ms\n", minutos, segundos, mlSecs);
+
+
+
+    /////////////////////////////////////
+    ventana(args,argsv);
+
+
+    ////////////////////////////////////
 
     return 0;
 }

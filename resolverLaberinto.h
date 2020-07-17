@@ -18,7 +18,8 @@
 #define SUR 2
 #define ESTE 3
 #define TEST(a,b) ((a) & (1<<(b)))// 10 10
-#define FPS 10
+#define FPS 100
+int casillas;
 int n;
 char linea[MAX];
 int lineas[MAX];
@@ -46,7 +47,10 @@ int direcciones[MAX][MAX];
 int contadorG;
 int solucionBfs[MAX];
 struct pair sol[MAX];
-struct punto solucionXY[MAX];
+struct pair solBfs[MAX];
+struct pair solDfs[MAX];
+struct punto solucionXYBFS[MAX];
+struct punto solucionXYDFS[MAX];
 int solucionDfs[MAX];
 struct pair arregloBits[MAX];
 int resultadosR [MAX];
@@ -62,6 +66,7 @@ int contPosicion;
 int resultado;
 int cant_pares;
 int dir;
+bool terminar;
 struct queue *createQueue();
 void enqueue(struct queue *q, int);
 void printQueue(struct queue* q);

@@ -47,77 +47,15 @@ void unit(int x, int y, int l, int nodo) {
     glEnd();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-void initGrid(int x, int y) {
-    gridX = x;
-    gridY = y;
-}
-
-void unit(int, int, int);
-
-void drawGrid() {
-    for (int i = 0; i < filas; ++i) {
-        for (int j = 0; j < columnas; ++j) {
-            for (int l = 0; l < 4; ++l) {
-                unit(i,j,l);
-            }
-        }
+int i =1;
+void dibujar_laberinto(){
+    glColor3f(0.0, 1.0, 1.0);
+    glPointSize(4.0);
+    glBegin(GL_POINTS);
+    i ++;
+    for (int j = 0; j < i && i < contador; ++j) {
+        glVertex2f(solucionXYBFS[j].x + 0.5, ((filas - 1) - solucionXYBFS[j].y) + 0.5);
     }
-}
-
-void unit(int i ,int j, int l) {
-
-    glLineWidth(1.0);
-    glColor3f(0.0, 0.0, 0.0);
-    glBegin(GL_LINE_LOOP);
-        if (direcciones[((i * columnas) - 1) + j][l] == -1 && l == 0) {
-            glColor3f(1.0, 0.0, 0.0);
-            printf("Fila: %d\n", i);
-            printf("Columna: %d\n", j);
-            printf("L: %d\n", l);
-            glVertex2f(i, j);
-            glVertex2f(i + 1, j);
-            glEnd();
-        }
-        else if (direcciones[((i * columnas) - 1) + j][l] == -1 && l == 1) {
-            glColor3f(0.0, 1.0, 0.0);
-            printf("Fila: %d\n", i);
-            printf("Columna: %d\n", j);
-            printf("L: %d\n", l);
-            glVertex2f(i, j);
-            glVertex2f(i, j + 1);
-            glEnd();
-        }
-        else if (direcciones[((i * columnas) - 1) + j][l] == -1 && l == 2) {
-            glColor3f(0.0, 0.0, 1.0);
-            printf("Fila: %d\n", i);
-            printf("Columna: %d\n", j);
-            printf("L: %d\n", l);
-            glVertex2f(i, j + 1);
-            glVertex2f(i + 1, j + 1);
-            glEnd();
-        }
-        else if (direcciones[((i * columnas) - 1) + j][l] == -1 && l == 3) {
-            glColor3f(0.0, 1.0, 1.0);
-            printf("Fila: %d\n", i);
-            printf("Columna: %d\n", j);
-            printf("L: %d\n", l);
-            glVertex2f(i + 1, j);
-            glVertex2f(i + 1, j + 1);
-            glEnd();
-        }
     glEnd();
 }
-*/
+

@@ -7,5 +7,6 @@
 
 void initGrid(int,int);
 void drawGrid();
+void dibujar_laberinto();
 
 #endif //PRUBASC_LABERINTO_H
