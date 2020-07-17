@@ -1,0 +1,10 @@
+[default]
+name=Default
+runtime=host
+config-opts=
+run-opts=
+prefix=/home/edgar/.cache/gnome-builder/install/prubasc/host
+app-id=
+postbuild=
+prebuild=
+default=true

@@ -262,6 +262,8 @@ void nodosMatriz() {
     }
 }
 
+struct punto obtener_posicion(int);
+
 void direccionesSolucion(int contSol, int solucion[MAX]) {
     nodosiguiente = 1;
     bool primero = true;
@@ -274,9 +276,11 @@ void direccionesSolucion(int contSol, int solucion[MAX]) {
         int nodo = solucion[i];
         for (int j = 0; j < 4 && !conectados; ++j) {
             if (direcciones[nodo][j] == solucion[nodosiguiente]) {
+                punto = obtener_posicion(nodo);
                 par.a = nodo;//Origen
                 par.b = j;//direccion
                 sol[contador] = par;
+                solucionXY[contador] = punto;
                 contador++;
                 conectados = true;
             }
@@ -373,13 +377,24 @@ void display_callback();
 void reshape_callback(int, int);
 
 void init() {
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     initGrid(columnas, filas);
+}
+
+void puntos() {
+    glColor3f(0.0, 1.0, 1.0);
+    glPointSize(4.0);
+    glBegin(GL_POINTS);
+    for (int j = 0; j < contador; ++j) {
+        glVertex2f(solucionXY[j].x + 0.5, ((filas - 1) - solucionXY[j].y) + 0.5);
+    }
+    glEnd();
 }
 
 void display_callback() {
     glClear(GL_COLOR_BUFFER_BIT);
     drawGrid();
+    puntos();
     glutSwapBuffers();
 }
 
@@ -392,9 +407,21 @@ void reshape_callback(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
+struct punto obtener_posicion(int numero) {
+    for (int i = 0; i < filas; ++i) {
+        for (int j = 0; j < columnas; ++j) {
+            if (matrizOrig[i][j] == numero) {
+                punto.x = j;
+                punto.y = i;
+                return punto;
+            }
+        }
+    }
+}
+
 void timer_callback() {
     glutPostRedisplay();
-    glutTimerFunc(0, timer_callback, 0);
+    glutTimerFunc(1000 / FPS, timer_callback, 0);
 }
 
 /////////////////////////////////////////////////
@@ -406,8 +433,8 @@ double timeval_diff(struct timeval *a, struct timeval *b) {
 
 
 int main(int args, char *argsv[]) {
-    int puntoAx = atoi(argsv[1]);
-    int puntoAy = atoi(argsv[2]);
+    puntoAx = atoi(argsv[1]);
+    puntoAy = atoi(argsv[2]);
     int puntoBx = atoi(argsv[3]);
     int puntoBy = atoi(argsv[4]);
 
@@ -451,29 +478,34 @@ int main(int args, char *argsv[]) {
     gettimeofday(&t_fin, NULL);
 
     /////////////////////////////////////
+
     printf("\n");
     printf("\n");
+
+    printf("Sol\n");
     for (int j = 0; j < contador; ++j) {
-        printf("%d  %d\n", sol[j].a, sol[j].b);
+        printf("%d  %d\n", sol[j].a,sol[j].b);
     }
+    printf("Puntos\n");
+    for (int j = 0; j < contador; ++j) {
+        printf("%d  %d\n", solucionXY[j].x,solucionXY[j].y);
+    }
+
+    imprimirMatriz(matrizOrig, filas, columnas);
 
     printf("\n");
     printf("\n");
 
     glutInit(&args, argsv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-    if(filas < 200 || columnas < 200){
-        glutInitWindowSize(700, 700);
-    }
-    else{
-        glutInitWindowSize(1000, 1000);
-    }
+    glutInitWindowSize(1000, 1000);
     glutCreateWindow("Laberinto");
+    glutDisplayFunc(puntos);
     glutDisplayFunc(display_callback);
     glutReshapeFunc(reshape_callback);
-    glutTimerFunc(10, timer_callback, 0);
     init();
     glutMainLoop();
+
     ////////////////////////////////////
 
     mlSecs = timeval_diff(&t_fin, &t_ini);
@@ -487,4 +519,4 @@ int main(int args, char *argsv[]) {
     return 0;
 }
 
-// gcc resolverLaberinto.c laberinto.c -o firstOpenGlApp -lglut -lGLU -lGL
+// gcc resolverLaberinto.c laberinto.c -o progra -lglut -lGLU -lGL

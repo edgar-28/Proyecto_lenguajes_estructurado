@@ -18,7 +18,7 @@
 #define SUR 2
 #define ESTE 3
 #define TEST(a,b) ((a) & (1<<(b)))// 10 10
-#define FPS 1000
+#define FPS 10
 int n;
 char linea[MAX];
 int lineas[MAX];
@@ -30,6 +30,12 @@ struct pair {
     int a;
     int b;
 }par;
+struct punto {
+    int x;
+    int y;
+}punto;
+int puntoAx;
+int puntoAy;
 int filas;
 int columnas;
 int matriz[MAX][MAX];
@@ -40,6 +46,7 @@ int direcciones[MAX][MAX];
 int contadorG;
 int solucionBfs[MAX];
 struct pair sol[MAX];
+struct punto solucionXY[MAX];
 int solucionDfs[MAX];
 struct pair arregloBits[MAX];
 int resultadosR [MAX];

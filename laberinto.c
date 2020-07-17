@@ -28,8 +28,8 @@ void drawGrid() {
 }
 
 void unit(int x, int y, int l, int nodo) {
-    glLineWidth(3.0);
-    glColor3f(1.0, 0.0, 0.0);
+    glLineWidth(2.0);
+    glColor3f(0.5, 0.5, 0.5);
     glBegin(GL_LINES);
     if (direcciones[nodo][l] == -1 && l == 0) {
         glVertex2f(x, y + 1);
