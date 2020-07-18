@@ -376,7 +376,6 @@ void generarResultado() {
     printf("\n");
 }
 
-////////////////////////////////////////////////////
 void timer_callback();
 
 void display_callback();
@@ -424,7 +423,6 @@ void timer_callback() {
     glutTimerFunc(1000 / casillas, timer_callback, 0);
 }
 
-/////////////////////////////////////////////////
 double timeval_diff(struct timeval *a, struct timeval *b) {
     return
             (double) (a->tv_sec + (double) a->tv_usec / 1000000) -
@@ -449,21 +447,14 @@ int main(int args, char *argsv[]) {
     puntoAy = atoi(argsv[2]);
     int puntoBx = atoi(argsv[3]);
     int puntoBy = atoi(argsv[4]);
-
     struct timeval t_ini, t_fin;
     double mlSecs;
-
     gettimeofday(&t_ini, NULL);
-
     casillas = atoi(argsv[5]);
     crearMatriz();
-    //imprimirMatriz(matriz,filas,columnas);
     matrizDirecciones();
-    //imprimirMatriz(direcciones, numNodos, 4);
     crearGrafo();
-
     nodosMatriz();
-    //imprimirMatriz(matrizOrig,filas,columnas);
     inicio = matrizOrig[puntoAx][puntoAy];
     final = matrizOrig[puntoBx][puntoBy];
     struct Graph *graph = createGraph(numNodos);
@@ -473,7 +464,6 @@ int main(int args, char *argsv[]) {
     }
     bfs(graph, inicio, final);
 
-
     for (int k = 0; k < contador; ++k) {
         solBfs[k] = sol[k];
     }
@@ -481,24 +471,18 @@ int main(int args, char *argsv[]) {
     for (int j = 0; j < numNodos; ++j) {
         graph->visited[j] = 0;
     }
-
     generarBits();
     generarResultado();
-
     dfs(graph, inicio, final);
     solucionDfs[contDfs + 1] = final;
     direccionesSolucion(contBfs, solucionBfs, 0);
     direccionesSolucion(contDfs, solucionDfs, 1);
-
     for (int k = 0; k < contador; ++k) {
         solDfs[k] = sol[k];
     }
-
     generarBits();
     generarResultado();
-
     gettimeofday(&t_fin, NULL);
-
     mlSecs = timeval_diff(&t_fin, &t_ini);
     int segundos = mlSecs;
     mlSecs = mlSecs - segundos;
@@ -507,15 +491,12 @@ int main(int args, char *argsv[]) {
 
     printf("Tiempo: %d min, %d segundos %.16g ms\n", minutos, segundos, mlSecs);
 
-
-
     /////////////////////////////////////
     ventana(args,argsv);
-
-
     ////////////////////////////////////
 
     return 0;
 }
 
 // gcc resolverLaberinto.c laberinto.c -o progra -lglut -lGLU -lGL
+// gcc resolverLaberinto.c laberinto.c -o progra -lglut -lGLU -lGL -pthread
