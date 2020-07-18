@@ -8,6 +8,8 @@
 
 int gridX, gridY;
 
+extern bool terminar;
+
 void initGrid(int x, int y) {
     gridX = x;
     gridY = y;
@@ -53,15 +55,18 @@ void dibujar_laberinto(){
     glPointSize(4.0);
     glBegin(GL_POINTS);
     i ++;
-    /*
+    if(i >= contador){
+        terminar = true;
+    }
+
     for (int j = 0; j < i && i < contador; ++j) {
         glVertex2f(solucionXY[j].x + 0.5, ((filas - 1) - solucionXY[j].y) + 0.5);
     }
-     */
+    /*
     for (int j = 0; j < contador; ++j) {
         glVertex2f(solucionXY[j].x + 0.5, ((filas - 1) - solucionXY[j].y) + 0.5);
     }
-
+    */
     glEnd();
 }
 

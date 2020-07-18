@@ -14,26 +14,26 @@
 
 bool terminar = false;
 
-struct queue {
+struct cola {
     int items[SIZE];
     int front;
     int rear;
 };
 
-struct queue *createQueue();
+struct cola *crearCola();
 
-void enqueue(struct queue *q, int);
+void encolar(struct cola *q, int value);
 
-int dequeue(struct queue *q);
+int desencolar(struct cola *q);
 
-int isEmpty(struct queue *q);
+int estaVacio(struct cola *q);
 
 struct node {
     int vertex;
     struct node *next;
 };
 
-struct node *createNode(int);
+struct node *crearNodo(int);
 
 struct Graph {
     int numVertices;
@@ -60,11 +60,11 @@ void dfs(struct Graph *graph, int start, int end) {
 // BFS algorithm
 void bfs(struct Graph *graph, int startVertex, int endVertex) {
     contBfs = 0;
-    struct queue *q = createQueue();
+    struct cola *q = crearCola();
     graph->visited[startVertex] = 1;
-    enqueue(q, startVertex);
-    while (!isEmpty(q)) {
-        int currentVertex = dequeue(q);
+    encolar(q, startVertex);
+    while (!estaVacio(q)) {
+        int currentVertex = desencolar(q);
         solucionBfs[contBfs] = currentVertex;
         struct node *temp = graph->adjLists[currentVertex];
 
@@ -72,7 +72,7 @@ void bfs(struct Graph *graph, int startVertex, int endVertex) {
             int adjVertex = temp->vertex;
             if (graph->visited[adjVertex] == 0) {
                 graph->visited[adjVertex] = 1;
-                enqueue(q, adjVertex);
+                encolar(q, adjVertex);
             }
             temp = temp->next;
         }
@@ -81,7 +81,7 @@ void bfs(struct Graph *graph, int startVertex, int endVertex) {
 }
 
 // Creating a node
-struct node *createNode(int v) {
+struct node *crearNodo(int v) {
     struct node *newNode = malloc(sizeof(struct node));
     newNode->vertex = v;
     newNode->next = NULL;
@@ -89,7 +89,7 @@ struct node *createNode(int v) {
 }
 
 // Creating a graph
-struct Graph *createGraph(int vertices) {
+struct Graph *addGrafo(int vertices) {
     struct Graph *graph = malloc(sizeof(struct Graph));
     graph->numVertices = vertices;
 
@@ -105,36 +105,36 @@ struct Graph *createGraph(int vertices) {
 }
 
 // Add edge
-void addEdge(struct Graph *graph, int src, int dest) {
+void agergarVertice(struct Graph *graph, int src, int dest) {
     // Add edge from src to dest
-    struct node *newNode = createNode(dest);
+    struct node *newNode = crearNodo(dest);
     newNode->next = graph->adjLists[src];
     graph->adjLists[src] = newNode;
 
     // Add edge from dest to src
-    newNode = createNode(src);
+    newNode = crearNodo(src);
     newNode->next = graph->adjLists[dest];
     graph->adjLists[dest] = newNode;
 }
 
-// Create a queue
-struct queue *createQueue() {
-    struct queue *q = malloc(sizeof(struct queue));
+// Create a cola
+struct cola *crearCola() {
+    struct cola *q = malloc(sizeof(struct cola));
     q->front = -1;
     q->rear = -1;
     return q;
 }
 
-// Check if the queue is empty
-int isEmpty(struct queue *q) {
+// Check if the cola is empty
+int estaVacio(struct cola *q) {
     if (q->rear == -1)
         return 1;
     else
         return 0;
 }
 
-// Adding elements into queue
-void enqueue(struct queue *q, int value) {
+// Adding elements into cola
+void encolar(struct cola *q, int value) {
     if (q->rear == SIZE - 1) {
 
     } else {
@@ -145,10 +145,10 @@ void enqueue(struct queue *q, int value) {
     }
 }
 
-// Removing elements from queue
-int dequeue(struct queue *q) {
+// Removing elements from cola
+int desencolar(struct cola *q) {
     int item;
-    if (isEmpty(q)) {
+    if (estaVacio(q)) {
         item = -1;
     } else {
         item = q->items[q->front];
@@ -451,39 +451,34 @@ int main(int args, char *argsv[]) {
     nodosMatriz();
     inicio = matrizOrig[puntoAx][puntoAy];
     final = matrizOrig[puntoBx][puntoBy];
-    struct Graph *graph = createGraph(numNodos);
 
+    struct Graph *graph = addGrafo(numNodos);
     for (int i = 0; i < numNodos; ++i) {
-        addEdge(graph, grafo[i].a, grafo[i].b);
-    }
-    ///////////////////////////////////////////////////////
-    //bfs(graph, inicio, final);
-    //direccionesSolucion(contBfs, solucionBfs);
-    for (int j = 0; j < numNodos; ++j) {
-        graph->visited[j] = 0;
+        agergarVertice(graph, grafo[i].a, grafo[i].b);
     }
 
-    //generarBits();
-    //generarResultado();
-    ///////////////////////////////////////////////////////
-    dfs(graph, inicio, final);
-    solucionDfs[contDfs + 1] = final;
-    direccionesSolucion(contDfs, solucionDfs);
+    bfs(graph, inicio, final);
+    direccionesSolucion(contBfs, solucionBfs);
+    for (int j = 0; j < numNodos; ++j) {
+        graph->visited[j] = 0;}
     generarBits();
     generarResultado();
+
+    //dfs(graph, inicio, final);
+    //solucionDfs[contDfs + 1] = final;
+    //direccionesSolucion(contDfs, solucionDfs);
+    //generarBits();
+    //generarResultado();
+
     gettimeofday(&t_fin, NULL);
     mlSecs = timeval_diff(&t_fin, &t_ini);
     int segundos = mlSecs;
     mlSecs = mlSecs - segundos;
     int minutos = segundos / 60;
     segundos -= minutos * 60;
-
     printf("Tiempo: %d min, %d segundos %.16g ms\n", minutos, segundos, mlSecs);
 
-    /////////////////////////////////////
     ventana(args,argsv);
-    ////////////////////////////////////
-
     return 0;
 }
 
