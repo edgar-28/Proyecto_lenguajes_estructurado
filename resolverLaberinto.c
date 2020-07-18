@@ -428,7 +428,6 @@ void ventana(int args, char *argsv[]) {
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutInitWindowSize(1000, 1000);
     glutCreateWindow("Laberinto");
-    //glutDisplayFunc(display);
     glutDisplayFunc(display_callback);
     glutReshapeFunc(reshape_callback);
     glutTimerFunc(1000/casillas, timer_callback, 0);

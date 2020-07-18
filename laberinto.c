@@ -59,6 +59,18 @@ void dibujar_laberinto(){
         terminar = true;
     }
 
+    /*
+    int k = 0;
+    for (k = 0; k < i; ++k) {
+        if((solucionXY[k].x == solucionXY[i].x) && ((solucionXY[k].x == solucionXY[i].x))){
+            for (int j = i; j > k; --j) {
+                glColor3f(0.0, 1.0, 1.0);
+                glVertex2f(solucionXY[j].x + 0.5, ((filas - 1) - solucionXY[j].y) + 0.5);
+            }
+        }
+    }
+    */
+
     for (int j = 0; j < i && i < contador; ++j) {
         glVertex2f(solucionXY[j].x + 0.5, ((filas - 1) - solucionXY[j].y) + 0.5);
     }
