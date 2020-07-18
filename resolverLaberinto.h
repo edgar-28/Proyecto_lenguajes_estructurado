@@ -49,7 +49,7 @@ int solucionBfs[MAX];
 struct pair sol[MAX];
 struct pair solBfs[MAX];
 struct pair solDfs[MAX];
-struct punto solucionXYBFS[MAX];
+struct punto solucionXY[MAX];
 struct punto solucionXYDFS[MAX];
 int solucionDfs[MAX];
 struct pair arregloBits[MAX];

@@ -265,7 +265,7 @@ void nodosMatriz() {
 
 struct punto obtener_posicion(int);
 
-void direccionesSolucion(int contSol, int solucion[MAX], int algoritmo) {
+void direccionesSolucion(int contSol, int solucion[MAX]) {
     nodosiguiente = 1;
     bool primero = true;
     int i = 0;
@@ -281,13 +281,7 @@ void direccionesSolucion(int contSol, int solucion[MAX], int algoritmo) {
                 par.a = nodo;//Origen
                 par.b = j;//direccion
                 sol[contador] = par;
-                if(algoritmo == 0){ // BFS
-                    solucionXYBFS[contador] = punto;
-                }
-                else if(algoritmo == 1){
-                    solucionXYDFS[contador] = punto;
-                }
-
+                solucionXY[contador] = punto;
                 contador++;
                 conectados = true;
             }
@@ -462,24 +456,19 @@ int main(int args, char *argsv[]) {
     for (int i = 0; i < numNodos; ++i) {
         addEdge(graph, grafo[i].a, grafo[i].b);
     }
-    bfs(graph, inicio, final);
-
-    for (int k = 0; k < contador; ++k) {
-        solBfs[k] = sol[k];
-    }
-
+    ///////////////////////////////////////////////////////
+    //bfs(graph, inicio, final);
+    //direccionesSolucion(contBfs, solucionBfs);
     for (int j = 0; j < numNodos; ++j) {
         graph->visited[j] = 0;
     }
-    generarBits();
-    generarResultado();
+
+    //generarBits();
+    //generarResultado();
+    ///////////////////////////////////////////////////////
     dfs(graph, inicio, final);
     solucionDfs[contDfs + 1] = final;
-    direccionesSolucion(contBfs, solucionBfs, 0);
-    direccionesSolucion(contDfs, solucionDfs, 1);
-    for (int k = 0; k < contador; ++k) {
-        solDfs[k] = sol[k];
-    }
+    direccionesSolucion(contDfs, solucionDfs);
     generarBits();
     generarResultado();
     gettimeofday(&t_fin, NULL);

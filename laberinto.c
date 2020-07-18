@@ -53,9 +53,15 @@ void dibujar_laberinto(){
     glPointSize(4.0);
     glBegin(GL_POINTS);
     i ++;
+    /*
     for (int j = 0; j < i && i < contador; ++j) {
-        glVertex2f(solucionXYBFS[j].x + 0.5, ((filas - 1) - solucionXYBFS[j].y) + 0.5);
+        glVertex2f(solucionXY[j].x + 0.5, ((filas - 1) - solucionXY[j].y) + 0.5);
     }
+     */
+    for (int j = 0; j < contador; ++j) {
+        glVertex2f(solucionXY[j].x + 0.5, ((filas - 1) - solucionXY[j].y) + 0.5);
+    }
+
     glEnd();
 }
 
